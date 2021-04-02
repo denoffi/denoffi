@@ -1,0 +1,18 @@
+*.orig
+*.pyc
+*.swp
+
+*.log
+.cache
+*bak
+.history
+.temp/**
+
+# Rust
+/target
+/example/target
+/.cargo_home
+
+# MacOS generated files
+.DS_Store
+.DS_Store?

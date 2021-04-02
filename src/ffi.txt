@@ -1,0 +1,76 @@
+static FFI_64_BIT_MAX: i64 = 9223372036854775807;
+
+enum FfiStatus {
+  OK = 0,
+  BAD_TYPEDEF,
+  BAD_ABI,
+}
+
+struct FfiType {
+    size: isize,
+   alignment: u16,
+   short type: u16,
+   elements: FfiType,
+}
+
+/* These are defined in types.c */
+FFI_EXTERN ffi_type ffi_type_void;
+FFI_EXTERN ffi_type ffi_type_uint8;
+FFI_EXTERN ffi_type ffi_type_sint8;
+FFI_EXTERN ffi_type ffi_type_uint16;
+FFI_EXTERN ffi_type ffi_type_sint16;
+FFI_EXTERN ffi_type ffi_type_uint32;
+FFI_EXTERN ffi_type ffi_type_sint32;
+FFI_EXTERN ffi_type ffi_type_uint64;
+FFI_EXTERN ffi_type ffi_type_sint64;
+FFI_EXTERN ffi_type ffi_type_float;
+FFI_EXTERN ffi_type ffi_type_double;
+FFI_EXTERN ffi_type ffi_type_pointer;
+
+/* If these change, update src/mips/ffitarget.h. */
+#define FFI_TYPE_VOID       0    
+#define FFI_TYPE_INT        1
+#define FFI_TYPE_FLOAT      2    
+#define FFI_TYPE_DOUBLE     3
+#if 0
+#define FFI_TYPE_LONGDOUBLE 4
+#else
+#define FFI_TYPE_LONGDOUBLE FFI_TYPE_DOUBLE
+#endif
+#define FFI_TYPE_UINT8      5   
+#define FFI_TYPE_SINT8      6
+#define FFI_TYPE_UINT16     7 
+#define FFI_TYPE_SINT16     8
+#define FFI_TYPE_UINT32     9
+#define FFI_TYPE_SINT32     10
+#define FFI_TYPE_UINT64     11
+#define FFI_TYPE_SINT64     12
+#define FFI_TYPE_STRUCT     13
+#define FFI_TYPE_POINTER    14
+
+
+Local<Object> ftmap = Nan::New<Object>();
+ftmap->Set(Nan::New<String>("void").ToLocalChecked(), WrapPointer((char *)&ffi_type_void));
+ftmap->Set(Nan::New<String>("uint8").ToLocalChecked(), WrapPointer((char *)&ffi_type_uint8));
+ftmap->Set(Nan::New<String>("int8").ToLocalChecked(), WrapPointer((char *)&ffi_type_sint8));
+ftmap->Set(Nan::New<String>("uint16").ToLocalChecked(), WrapPointer((char *)&ffi_type_uint16));
+ftmap->Set(Nan::New<String>("int16").ToLocalChecked(), WrapPointer((char *)&ffi_type_sint16));
+ftmap->Set(Nan::New<String>("uint32").ToLocalChecked(), WrapPointer((char *)&ffi_type_uint32));
+ftmap->Set(Nan::New<String>("int32").ToLocalChecked(), WrapPointer((char *)&ffi_type_sint32));
+ftmap->Set(Nan::New<String>("uint64").ToLocalChecked(), WrapPointer((char *)&ffi_type_uint64));
+ftmap->Set(Nan::New<String>("int64").ToLocalChecked(), WrapPointer((char *)&ffi_type_sint64));
+ftmap->Set(Nan::New<String>("uchar").ToLocalChecked(), WrapPointer((char *)&ffi_type_uchar));
+ftmap->Set(Nan::New<String>("char").ToLocalChecked(), WrapPointer((char *)&ffi_type_schar));
+ftmap->Set(Nan::New<String>("ushort").ToLocalChecked(), WrapPointer((char *)&ffi_type_ushort));
+ftmap->Set(Nan::New<String>("short").ToLocalChecked(), WrapPointer((char *)&ffi_type_sshort));
+ftmap->Set(Nan::New<String>("uint").ToLocalChecked(), WrapPointer((char *)&ffi_type_uint));
+ftmap->Set(Nan::New<String>("int").ToLocalChecked(), WrapPointer((char *)&ffi_type_sint));
+ftmap->Set(Nan::New<String>("float").ToLocalChecked(), WrapPointer((char *)&ffi_type_float));
+ftmap->Set(Nan::New<String>("double").ToLocalChecked(), WrapPointer((char *)&ffi_type_double));
+ftmap->Set(Nan::New<String>("pointer").ToLocalChecked(), WrapPointer((char *)&ffi_type_pointer));
+// NOTE: "long" and "ulong" get handled in JS-land
+// Let libffi handle "long long"
+ftmap->Set(Nan::New<String>("ulonglong").ToLocalChecked(), WrapPointer((char *)&ffi_type_ulong));
+ftmap->Set(Nan::New<String>("longlong").ToLocalChecked(), WrapPointer((char *)&ffi_type_slong));
+
+target->Set(Nan::New<String>("FFI_TYPES").ToLocalChecked(), ftmap);
