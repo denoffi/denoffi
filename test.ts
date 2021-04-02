@@ -1,9 +1,6 @@
 import { Library } from './mod.ts'
-import { getLibPath } from "./utils.ts";
 
-const dllPath = getLibPath("example", "example");
-
-const lib = Library(dllPath, {
+const lib = Library('libadd', {
   'add': ['int', ['int']]
 })
 

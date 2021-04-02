@@ -1,5 +1,6 @@
-import { setup, handlers, debug, info } from "https://deno.land/std@0.91.0/log/mod.ts";
-import { getLibPath } from "./utils.ts";
+import { setup, handlers, debug, info } from "https://deno.land/std@0.92.0/log/mod.ts";
+import { toFileUrl, join } from "https://deno.land/std@0.92.0/path/mod.ts";
+import { Plug } from "https://deno.land/x/plug@0.2.10/mod.ts";
 
 await setup({
   handlers: {
@@ -16,15 +17,18 @@ await setup({
 const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
 
-const plguinPath = getLibPath("deno_plugin_ffi");
+const options: Plug.Options = {
+  name: "deno_plugin_ffi",
+  url: toFileUrl(join(Deno.cwd(), "target", "debug")).href
+};
 
-const rid = Deno.openPlugin(plguinPath);
+const rid = await Plug.prepare(options);
 
 const {
   op_ffi_dlopen: dlOpen,
   op_ffi_dlclose: dlClose,
   op_ffi_call: ffiCall,
-} = Deno.core.ops();
+} = Plug.core.ops();
 
 if (dlOpen <= 0) {
   throw "bad op id for op_ffi_dlopen";
@@ -64,7 +68,7 @@ export function Library<T extends Funcs>(libfile: string, funcs: T, lib?: Record
 
   debug('creating Library object for', libfile);
 
-  if (!libfile.includes(EXT)) {
+  if (!libfile.endsWith(EXT)) {
     debug('appending library extension to library name', EXT);
     libfile += EXT;
   }
@@ -101,9 +105,7 @@ export class DynamicLibrary {
   }
 
   open(path: string): number {
-    // deno-lint-ignore ban-ts-comment
-    // @ts-ignore
-    const response = Deno.core.dispatch(
+    const response = Plug.core.dispatch(
       dlOpen,
       textEncoder.encode(path),
     );
@@ -118,7 +120,7 @@ export class DynamicLibrary {
     dv.setUint32(1, args[0], true)
     dv.setUint32(5, args[1], true)
 
-    const response = Deno.core.dispatch(
+    const response = Plug.core.dispatch(
       ffiCall,
       u8,
     );
@@ -131,9 +133,7 @@ export class DynamicLibrary {
   close() {
     const zeroCopy: Uint8Array = new Uint8Array([this.id])
 
-    // deno-lint-ignore ban-ts-comment
-    // @ts-ignore
-    const response = Deno.core.dispatch(
+    const response = Plug.core.dispatch(
       dlClose,
       zeroCopy,
     );
