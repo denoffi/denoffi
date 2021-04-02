@@ -12,6 +12,10 @@ keywords = ["deno", "deno_plugin", "ffi"]
 [lib]
 crate-type = ["cdylib"]
 
+[[example]]
+name = "add"
+crate-type = ["cdylib"]
+
 [dependencies]
 byteorder = "1.4.3"
 deno_core = "0.81.0"
