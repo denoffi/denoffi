@@ -20,5 +20,5 @@ type Fn4 = ffi.CFuntion<"void hello(void)">; // ["hello", ["void"], "void"]
 
 ### License
 
-[denoffi](https://github.com/denoffi/denoffi) is released under the MIT
-License. See the bundled [LICENSE](./LICENSE) file for details.
+[denoffi](https://github.com/denoffi/denoffi) is released under the MIT License.
+See the bundled [LICENSE](./LICENSE) file for details.
