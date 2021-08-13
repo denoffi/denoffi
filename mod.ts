@@ -19,7 +19,7 @@ type ParseParams<T> = T extends "" ? []
   : T extends `${infer K}` ? [toNative<K>]
   : [];
 
-type toNative<T> = T extends "int" ? "i64"
+type toNative<T> = T extends "int" ? "i32"
   : T extends "void" ? "void"
   : unknown;
 
