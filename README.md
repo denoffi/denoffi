@@ -12,10 +12,10 @@
 import * as ffi from "https://deno.land/x/ffi/mod.ts";
 
 type Fn0 = ffi.CFuntion<"int add(int, int)">; // ["add", ["i64", "i64"], "i64"]
-type Fn1 = ffi.CFuntion<"int add(int)">; // ["add", ["i64"], "i64"]
-type Fn2 = ffi.CFuntion<"void hello(int)">; // ["hello", ["i64"], "void"]
-type Fn3 = ffi.CFuntion<"void hello()">; // ["hello", [], "void"]
-type Fn4 = ffi.CFuntion<"void hello(void)">; // ["hello", ["void"], "void"]
+type Fn1 = ffi.CFuntion<"int add(int)">;      // ["add", ["i64"], "i64"]
+type Fn2 = ffi.CFuntion<"void hello(int)">;   // ["hello", ["i64"], "void"]
+type Fn3 = ffi.CFuntion<"void hello()">;      // ["hello", [], "void"]
+type Fn4 = ffi.CFuntion<"void hello(void)">;  // ["hello", ["void"], "void"]
 ```
 
 ### License

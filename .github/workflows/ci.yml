@@ -15,7 +15,7 @@ jobs:
       - uses: denoland/setup-deno@v1
 
       - name: Format
-        run: deno fmt --check
+        run: deno fmt --check *.ts
 
       - name: Lint
         run: deno lint
