@@ -1,8 +1,8 @@
 # Deno Foreign Function Interface (WIP & Need Help)
 
 [![ci](https://github.com/denoffi/denoffi/actions/workflows/ci.yml/badge.svg)](https://github.com/denoffi/denoffi/actions/workflows/ci.yml)
-[![tag](https://img.shields.io/github/release/justjavac/denoffi)](https://github.com/justjavac/denoffi/releases)
-[![license](https://img.shields.io/github/license/justjavac/denoffi)](https://github.com/justjavac/denoffi/blob/main/LICENSE)
+[![tag](https://img.shields.io/github/release/denoffi/denoffi)](https://github.com/denoffi/denoffi/releases)
+[![license](https://img.shields.io/github/license/denoffi/denoffi)](https://github.com/denoffi/denoffi/blob/main/LICENSE)
 
 **Deno Foreign Function Interface.**
 
@@ -20,5 +20,5 @@ type Fn4 = ffi.CFuntion<"void hello(void)">; // ["hello", ["void"], "void"]
 
 ### License
 
-[denoffi](https://github.com/justjavac/denoffi) is released under the MIT
+[denoffi](https://github.com/denoffi/denoffi) is released under the MIT
 License. See the bundled [LICENSE](./LICENSE) file for details.
