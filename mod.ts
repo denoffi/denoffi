@@ -8,7 +8,10 @@ type TrimEnd<T extends string> = T extends `${infer R} ` ? TrimEnd<R> : T;
 type Trim<T extends string> = TrimStart<TrimEnd<T>>;
 
 type ParseName<T> = T extends `${infer R} ${infer P}(${infer Rest})`
-  ? [Trim<P>, ParseParams<Trim<Rest>>, toNative<R>]
+  ? Record<
+    Trim<P>,
+    { parameters: ParseParams<Trim<Rest>>; result: toNative<R> }
+  >
   : never;
 
 type ParseParams<T> = T extends "" ? []
@@ -21,7 +24,7 @@ type ParseParams<T> = T extends "" ? []
 
 type toNative<T> = T extends "int" ? "i32"
   : T extends "void" ? "void"
-  : unknown;
+  : never;
 
 export type CFuntion<T extends string> = ParseName<Trim<T>>;
 
