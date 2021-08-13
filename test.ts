@@ -6,41 +6,49 @@ function assertType<S extends string, T extends ffi.CFuntion<S>>() {
 }
 
 Deno.test("int add(int a, int b)", (): void => {
-  assertType<"int add(int a, int b)", ["add", ["i32", "i32"], "i32"]>();
-  assertType<" int add(int, int)", ["add", ["i32", "i32"], "i32"]>();
-  assertType<"int  add(int, int)", ["add", ["i32", "i32"], "i32"]>();
-  assertType<"int add( int, int)", ["add", ["i32", "i32"], "i32"]>();
-  assertType<"int add(int,  int)", ["add", ["i32", "i32"], "i32"]>();
-  assertType<"int add(int, int) ", ["add", ["i32", "i32"], "i32"]>();
-  assertType<"int add(int, int )", ["add", ["i32", "i32"], "i32"]>();
-  assertType<" int add( int, int )", ["add", ["i32", "i32"], "i32"]>();
+  type Add = { "add": { parameters: ["i32", "i32"]; result: "i32" } };
+
+  assertType<"int add(int a, int b)", Add>();
+  assertType<" int add(int, int)", Add>();
+  assertType<"int  add(int, int)", Add>();
+  assertType<"int add( int, int)", Add>();
+  assertType<"int add(int,  int)", Add>();
+  assertType<"int add(int, int) ", Add>();
+  assertType<"int add(int, int )", Add>();
+  assertType<" int add( int, int )", Add>();
 });
 
 Deno.test("int abs(int a)", (): void => {
-  assertType<"int abs(int a)", ["abs", ["i32"], "i32"]>();
-  assertType<"int abs(int)", ["abs", ["i32"], "i32"]>();
-  assertType<" int abs(int a)", ["abs", ["i32"], "i32"]>();
-  assertType<"int  abs(int a)", ["abs", ["i32"], "i32"]>();
-  assertType<"int abs(  int a)", ["abs", ["i32"], "i32"]>();
-  assertType<"int abs (int a )", ["abs", ["i32"], "i32"]>();
-  assertType<" int  abs(  int a  )", ["abs", ["i32"], "i32"]>();
+  type Abs = { "abs": { parameters: ["i32"]; result: "i32" } };
+
+  assertType<"int abs(int a)", Abs>();
+  assertType<"int abs(int)", Abs>();
+  assertType<" int abs(int a)", Abs>();
+  assertType<"int  abs(int a)", Abs>();
+  assertType<"int abs(  int a)", Abs>();
+  assertType<"int abs (int a )", Abs>();
+  assertType<" int  abs(  int a  )", Abs>();
 });
 
 Deno.test("int foo()", (): void => {
-  assertType<"int foo()", ["foo", [], "i32"]>();
-  assertType<" int foo()", ["foo", [], "i32"]>();
-  assertType<"int  foo()", ["foo", [], "i32"]>();
-  assertType<" int  foo()", ["foo", [], "i32"]>();
-  assertType<"  int    foo(    )", ["foo", [], "i32"]>();
+  type Foo = { "foo": { parameters: []; result: "i32" } };
+
+  assertType<"int foo()", Foo>();
+  assertType<" int foo()", Foo>();
+  assertType<"int  foo()", Foo>();
+  assertType<" int  foo()", Foo>();
+  assertType<"  int    foo(    )", Foo>();
 });
 
 Deno.test("void foo()", (): void => {
-  assertType<"void foo()", ["foo", [], "void"]>();
-  assertType<" void foo()", ["foo", [], "void"]>();
-  assertType<"void  foo()", ["foo", [], "void"]>();
-  assertType<"void foo() ", ["foo", [], "void"]>();
-  assertType<"void foo(   )", ["foo", [], "void"]>();
-  assertType<"   void    foo(   )   ", ["foo", [], "void"]>();
+  type Foo = { "foo": { parameters: []; result: "void" } };
+
+  assertType<"void foo()", Foo>();
+  assertType<" void foo()", Foo>();
+  assertType<"void  foo()", Foo>();
+  assertType<"void foo() ", Foo>();
+  assertType<"void foo(   )", Foo>();
+  assertType<"   void    foo(   )   ", Foo>();
 });
 
 Deno.test("never", (): void => {
