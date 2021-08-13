@@ -7,11 +7,10 @@ type TrimStart<T extends string> = T extends ` ${infer R}` ? TrimStart<R> : T;
 type TrimEnd<T extends string> = T extends `${infer R} ` ? TrimEnd<R> : T;
 type Trim<T extends string> = TrimStart<TrimEnd<T>>;
 
-type ParseName<T> = T extends `${infer R} ${infer P}(${infer Rest})`
-  ? Record<
-    Trim<P>,
-    { parameters: ParseParams<Trim<Rest>>; result: toNative<R> }
-  >
+type ParseName<T> = T extends `${infer R} ${infer P}(${infer Rest})` ? Record<
+  Trim<P>,
+  { parameters: ParseParams<Trim<Rest>>; result: toNative<R> }
+>
   : never;
 
 type ParseParams<T> = T extends "" ? []
