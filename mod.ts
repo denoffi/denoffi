@@ -1,151 +1,49 @@
-import {
-  debug,
-  handlers,
-  setup,
-} from "https://deno.land/std@0.92.0/log/mod.ts";
-import { join, toFileUrl } from "https://deno.land/std@0.92.0/path/mod.ts";
-import { Plug } from "https://deno.land/x/plug@0.2.10/mod.ts";
-
-await setup({
-  handlers: {
-    console: new handlers.ConsoleHandler("DEBUG"),
-  },
-  loggers: {
-    default: {
-      level: "DEBUG",
-      handlers: ["console"],
-    },
-  },
-});
-
-const textDecoder = new TextDecoder();
-const textEncoder = new TextEncoder();
-
-const options: Plug.Options = {
-  name: "deno_plugin_ffi",
-  url: toFileUrl(join(Deno.cwd(), "target", "debug")).href,
-};
-
-const rid = await Plug.prepare(options);
-
-const {
-  op_ffi_dlopen: dlOpen,
-  op_ffi_dlclose: dlClose,
-  op_ffi_call: ffiCall,
-} = Plug.core.ops();
-
-if (dlOpen <= 0) {
-  throw "bad op id for op_ffi_dlopen";
-}
-
-if (dlClose <= 0) {
-  throw "bad op id for op_ffi_dlclose";
-}
-
-if (ffiCall <= 0) {
-  throw "bad op id for op_ffi_call";
-}
-
-/** ------------ */
-
-export type FFIType =
+type CType =
   | "int"
-  | "string";
+  | "long"
+  | "float";
 
-export type ReturnType = FFIType;
+type TrimStart<T extends string> = T extends ` ${infer R}` ? TrimStart<R> : T;
+type TrimEnd<T extends string> = T extends `${infer R} ` ? TrimEnd<R> : T;
+type Trim<T extends string> = TrimStart<TrimEnd<T>>;
 
-export type ArgTypes = FFIType[];
+type ParseName<T> = T extends `${infer R} ${infer P}(${infer Rest})`
+  ? [Trim<P>, ParseParams<Trim<Rest>>, toNative<R>]
+  : never;
 
-export type Funcs = { [key: string]: [ReturnType, ArgTypes] };
+type ParseParams<T> = T extends "" ? []
+  : T extends `${infer K} ${string},${infer R}`
+    ? [toNative<K>, ...ParseParams<Trim<R>>]
+  : T extends `${infer K},${infer R}` ? [toNative<K>, ...ParseParams<Trim<R>>]
+  : T extends `${infer K} ${string}` ? [toNative<K>]
+  : T extends `${infer K}` ? [toNative<K>]
+  : [];
 
-/**
- * @param libFile name of library
- * @param funcs hash of [retType, [...argType], opts?: {abi?, async?, varargs?}]
- * @param lib hash that will be extended
- */
-export function Library<T extends Funcs>(
-  libfile: string,
-  funcs: T,
-  lib?: Record<string, any>,
-) {
-  const EXT: ".so" | ".dylib" | ".dll" = ({
-    "windows": ".dll",
-    "darwin": ".dylib",
-    "linux": ".so",
-  } as const)[Deno.build.os];
+type toNative<T> = T extends "int" ? "i64"
+  : T extends "void" ? "void"
+  : unknown;
 
-  debug("creating Library object for", libfile);
+export type CFuntion<T extends string> = ParseName<Trim<T>>;
 
-  if (!libfile.endsWith(EXT)) {
-    debug("appending library extension to library name", EXT);
-    libfile += EXT;
-  }
-
-  const dll = new DynamicLibrary(libfile);
-
-  const key = Object.keys(funcs!)[0];
-
-  return {
-    add: function (num1: number, num2: number): number {
-      return dll.ffi_call(num1, num2) as number;
-    },
-  };
+export enum VoidType {
+  void = "void",
 }
 
-if (Deno.build.os === "windows") {
-  Library.EXT = ".dll";
+export enum NumberType {
+  u8 = "u8",
+  i8 = "i8",
+  u16 = "u16",
+  i16 = "i16",
+  u32 = "u32",
+  i32 = "i32",
+  u64 = "u64",
+  i64 = "i64",
+  usize = "usize",
+  isize = "isize",
+  f32 = "f32",
+  f64 = "f64",
 }
 
-if (Deno.build.os === "darwin") {
-  Library.EXT = ".dylib";
-}
-
-if (Deno.build.os === "linux") {
-  Library.EXT = ".so";
-}
-
-export class DynamicLibrary {
-  id: number;
-
-  constructor(path: string) {
-    debug("new DynamicLibrary()", path);
-    this.id = this.open(path);
-  }
-
-  open(path: string): number {
-    const response = Plug.core.dispatch(
-      dlOpen,
-      textEncoder.encode(path),
-    );
-
-    return response![0];
-  }
-
-  ffi_call(...args: number[]): unknown {
-    const u8 = new Uint8Array(9);
-    const dv = new DataView(u8.buffer);
-    dv.setUint8(0, this.id);
-    dv.setUint32(1, args[0], true);
-    dv.setUint32(5, args[1], true);
-
-    const response = Plug.core.dispatch(
-      ffiCall,
-      u8,
-    );
-
-    console.log("ffi_call response", response);
-
-    return response![0];
-  }
-
-  close() {
-    const zeroCopy: Uint8Array = new Uint8Array([this.id]);
-
-    const response = Plug.core.dispatch(
-      dlClose,
-      zeroCopy,
-    );
-
-    debug(`op_ffi_dlclose response: ${response}`);
-  }
-}
+export type types =
+  | VoidType
+  | NumberType;
