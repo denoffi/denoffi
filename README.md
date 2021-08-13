@@ -1,6 +1,6 @@
 # Deno Foreign Function Interface (WIP & Need Help)
 
-[![Build Status](https://github.com/justjavac/denoffi/workflows/ci/badge.svg?branch=main)](https://github.com/justjavac/denoffi/actions)
+[![ci](https://github.com/denoffi/denoffi/actions/workflows/ci.yml/badge.svg)](https://github.com/denoffi/denoffi/actions/workflows/ci.yml)
 [![tag](https://img.shields.io/github/release/justjavac/denoffi)](https://github.com/justjavac/denoffi/releases)
 [![license](https://img.shields.io/github/license/justjavac/denoffi)](https://github.com/justjavac/denoffi/blob/main/LICENSE)
 
