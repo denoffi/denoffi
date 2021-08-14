@@ -1,7 +1,7 @@
 import { assert } from "https://deno.land/std@0.103.0/testing/asserts.ts";
 import * as ffi from "./mod.ts";
 
-function assertType<S extends string, T extends ffi.CFuntion<S>>() {
+function assertType<S extends string, T extends ffi.CFunction<S>>() {
   return assert(true);
 }
 
@@ -16,6 +16,19 @@ Deno.test("int add(int a, int b)", (): void => {
   assertType<"int add(int, int) ", Add>();
   assertType<"int add(int, int )", Add>();
   assertType<" int add( int, int )", Add>();
+});
+
+Deno.test("unsigned int add(unsigned int a, unsigned int b)", (): void => {
+  type Add = { "add": { parameters: ["u32", "u32"]; result: "u32" } };
+
+  assertType<"unsigned int add(unsigned int a, unsigned int b)", Add>();
+  assertType<" unsigned int add(unsigned int a, unsigned int b)", Add>();
+  assertType<"unsigned int  add(unsigned int a, unsigned int b)", Add>();
+  assertType<"unsigned int add( unsigned int, unsigned int)", Add>();
+  assertType<"unsigned int add(unsigned int,  unsigned int)", Add>();
+  assertType<"unsigned int add(unsigned int, unsigned int) ", Add>();
+  assertType<"unsigned int add(unsigned int, unsigned int )", Add>();
+  assertType<" unsigned int add( unsigned int, unsigned int )", Add>();
 });
 
 Deno.test("int abs(int a)", (): void => {
