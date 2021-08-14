@@ -123,7 +123,6 @@ Deno.test("unsigned int add(unsigned int a, unsigned int b)", (): void => {
   assertType<" unsigned int add( unsigned int, unsigned int )", Add>();
 });
 
-
 // Unit function: Return the parameter itself
 Deno.test("char unit(char a)", (): void => {
   type Unit = { "unit": { parameters: ["i8"]; result: "i8" } };
