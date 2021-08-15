@@ -30,14 +30,14 @@ export function fromCSignature(sigString) {
   const reg2 =
     /(?:,\s*)?(?<T>(unsigned\s+)?((size_t)|(ptrdiff_t)|(char)|(short)|(int)|(long)|(float)|(double)))/gm;
   const typeMapping = {
-    size_t: "usize",
-    ptrdiff_t: "isize",
-    char: "i8",
-    short: "i16",
-    int: "i32",
-    long: "i64",
-    float: "f32",
-    double: "f64",
+    "size_t": "usize",
+    "ptrdiff_t": "isize",
+    "char": "i8",
+    "short": "i16",
+    "int": "i32",
+    "long": "i64",
+    "float": "f32",
+    "double": "f64",
     "unsigned char": "u8",
     "unsigned short": "u16",
     "unsigned int": "u32",
