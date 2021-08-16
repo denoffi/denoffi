@@ -11,11 +11,11 @@
 ```ts
 import * as ffi from "https://deno.land/x/ffi/mod.ts";
 
-type Fn0 = ffi.CFuntion<"int add(int, int)">; // { "add": { parameters: ["i32", "i32"]; result: "i32" } }
-type Fn1 = ffi.CFuntion<"long add(long)">; // { "abs": { parameters: ["i64"]; result: "i64" } }
-type Fn2 = ffi.CFuntion<"void hello(int)">; // { "hello": { parameters: ["i32"]; result: "void" } }
-type Fn3 = ffi.CFuntion<"void hello()">; // { "hello": { parameters: []; result: "void" } }
-type Fn4 = ffi.CFuntion<"void hello(void)">; // { "hello": { parameters: ["void"]; result: "void" } }
+type Fn0 = ffi.CFunction<"int add(int, int)">; // { "add": { parameters: ["i32", "i32"]; result: "i32" } }
+type Fn1 = ffi.CFunction<"long add(long)">; // { "abs": { parameters: ["i64"]; result: "i64" } }
+type Fn2 = ffi.CFunction<"void hello(int)">; // { "hello": { parameters: ["i32"]; result: "void" } }
+type Fn3 = ffi.CFunction<"void hello()">; // { "hello": { parameters: []; result: "void" } }
+type Fn4 = ffi.CFunction<"void hello(void)">; // { "hello": { parameters: ["void"]; result: "void" } }
 ```
 
 ### License
