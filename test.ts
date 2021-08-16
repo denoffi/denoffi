@@ -96,7 +96,7 @@ Deno.test("size_t add(size_t a, size_t b)", (): void => {
   assertType<" size_t add( size_t, size_t )", Add>();
 });
 
-Deno.test("double add(double a, double b)", (): void => {
+Deno.test("ptrdiff_t add(ptrdiff_t a, ptrdiff_t b)", (): void => {
   type Add = { "add": { parameters: ["isize", "isize"]; result: "isize" } };
 
   assertType<"ptrdiff_t add(ptrdiff_t a, ptrdiff_t b)", Add>();
