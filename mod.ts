@@ -6,5 +6,12 @@ export function cstr2ptr(cstr: string): Deno.UnsafePointer {
 }
 
 export function ptr2cstr(ptr: Deno.UnsafePointer): string {
+  if (ptr.value === 0n) {
+    return "";
+  }
+  return new Deno.UnsafePointerView(ptr).getCString();
+}
+
+export function ptr2cstr_unchecked(ptr: Deno.UnsafePointer): string {
   return new Deno.UnsafePointerView(ptr).getCString();
 }
