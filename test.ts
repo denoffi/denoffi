@@ -354,3 +354,26 @@ Deno.test("never", (): void => {
   assertType<"int add)", never>();
   assertType<"add()", never>();
 });
+
+Deno.test("double foo();", (): void => {
+  type Foo = { "foo": { parameters: []; result: "f64" } };
+
+  assertType<"double foo();", Foo>();
+  assertType<" double foo();", Foo>();
+  assertType<"double  foo();", Foo>();
+  assertType<" double  foo();", Foo>();
+  assertType<"  double    foo(    );", Foo>();
+});
+
+Deno.test("int foo();int bar()", (): void => {
+  type Foo = {
+    "foo": { parameters: []; result: "i32" };
+    "bar": { parameters: []; result: "i32" };
+  };
+
+  assertType<"int foo();int bar();", Foo>();
+  assertType<" int foo(); int  bar();", Foo>();
+  assertType<"int  foo();  int bar();", Foo>();
+  assertType<" int  foo();int   bar();", Foo>();
+  assertType<"  int    foo(    );int bar( );", Foo>();
+});

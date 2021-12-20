@@ -1,8 +1,10 @@
 type TrimStart<T extends string> = T extends ` ${infer R}` ? TrimStart<R>
   : T extends `\n${infer R}` ? TrimStart<R>
+  : T extends `\t${infer R}` ? TrimStart<R>
   : T;
 type TrimEnd<T extends string> = T extends `${infer R} ` ? TrimEnd<R>
   : T extends `${infer R}\n` ? TrimEnd<R>
+  : T extends `${infer R}\t` ? TrimEnd<R>
   : T;
 type Trim<T extends string> = TrimStart<TrimEnd<T>>;
 
@@ -13,31 +15,35 @@ type Combined<M extends string, T extends string> = `${M} ${T}`;
 type ParseName<T> = T extends `unsigned ${infer R} ${infer F}(${infer Rest})`
   ? Record<
     Trim<F>,
-    { parameters: ParseParams<Trim<Rest>>; result: toNative<`unsigned ${R}`> }
+    { parameters: ParseParams<Trim<Rest>>; result: ToNative<`unsigned ${R}`> }
   >
   : T extends `${infer R} ${infer F}(${infer Rest})` ? Record<
     Trim<F>,
-    { parameters: ParseParams<Trim<Rest>>; result: toNative<R> }
+    { parameters: ParseParams<Trim<Rest>>; result: ToNative<R> }
   >
   : never;
+
+type ParseNames<T> = T extends `${infer R};${infer Rest}`
+  ? ParseName<R> | ParseNames<Rest>
+  : ParseName<T>;
 
 type ParseParams<T> = T extends "" ? []
   : T extends IsUnsigned<T>
     ? (T extends `${infer M} ${infer K} ${string},${infer R}`
-      ? [toNative<Combined<M, K>>, ...ParseParams<Trim<R>>]
+      ? [ToNative<Combined<M, K>>, ...ParseParams<Trim<R>>]
       : T extends `${infer M} ${infer K},${infer R}`
-        ? [toNative<Combined<M, K>>, ...ParseParams<Trim<R>>]
-      : T extends `${infer M} ${infer K} ${string}` ? [toNative<Combined<M, K>>]
-      : T extends `${infer M} ${infer K}` ? [toNative<Combined<M, K>>]
+        ? [ToNative<Combined<M, K>>, ...ParseParams<Trim<R>>]
+      : T extends `${infer M} ${infer K} ${string}` ? [ToNative<Combined<M, K>>]
+      : T extends `${infer M} ${infer K}` ? [ToNative<Combined<M, K>>]
       : [])
   : (T extends `${infer K} ${string},${infer R}`
-    ? [toNative<K>, ...ParseParams<Trim<R>>]
-    : T extends `${infer K},${infer R}` ? [toNative<K>, ...ParseParams<Trim<R>>]
-    : T extends `${infer K} ${string}` ? [toNative<K>]
-    : T extends `${infer K}` ? [toNative<K>]
+    ? [ToNative<K>, ...ParseParams<Trim<R>>]
+    : T extends `${infer K},${infer R}` ? [ToNative<K>, ...ParseParams<Trim<R>>]
+    : T extends `${infer K} ${string}` ? [ToNative<K>]
+    : T extends `${infer K}` ? [ToNative<K>]
     : []);
 
-type toNative<T> = T extends IsUnsigned<T> ? (RealType<T> extends "char" ? "u8"
+type ToNative<T> = T extends IsUnsigned<T> ? (RealType<T> extends "char" ? "u8"
   : RealType<T> extends "short" ? "u16"
   : RealType<T> extends "int" ? "u32"
   : RealType<T> extends "long" ? "u64"
@@ -53,7 +59,7 @@ type toNative<T> = T extends IsUnsigned<T> ? (RealType<T> extends "char" ? "u8"
     : RealType<T> extends "ptrdiff_t" ? "isize"
     : never);
 
-export type CFunction<T extends string> = ParseName<Trim<T>>;
+export type CFunction<T extends string> = ParseNames<Trim<T>>;
 
 export enum VoidType {
   void = "void",
