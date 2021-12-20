@@ -21,10 +21,10 @@ export function ptr2cstr_unchecked(ptr: Deno.UnsafePointer): string {
  */
 export function isLittleEndian(): boolean {
   /*
-	* Set the uint16 view to a value having distinguishable lower and higher order words.
-	*
-	* 4660 => 0x1234 => 0x12 0x34 => '00010010 00110100' => (0x12,0x34) == (18,52)
-	*/
+	 * Set the uint16 view to a value having distinguishable lower and higher order words.
+	 *
+	 * 4660 => 0x1234 => 0x12 0x34 => '00010010 00110100' => (0x12,0x34) == (18,52)
+	 */
   const uint16 = Uint16Array.of(0x1234);
 
   // Create a uint8 view on top of the uint16 buffer:
