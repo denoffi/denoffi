@@ -1,15 +1,9 @@
-type CType =
-  | "size_t"
-  | "ptrdiff_t" // signed version of size_t
-  | "char"
-  | "short"
-  | "int"
-  | "long"
-  | "float"
-  | "double";
-
-type TrimStart<T extends string> = T extends ` ${infer R}` ? TrimStart<R> : T;
-type TrimEnd<T extends string> = T extends `${infer R} ` ? TrimEnd<R> : T;
+type TrimStart<T extends string> = T extends ` ${infer R}` ? TrimStart<R>
+  : T extends `\n${infer R}` ? TrimStart<R>
+  : T;
+type TrimEnd<T extends string> = T extends `${infer R} ` ? TrimEnd<R>
+  : T extends `${infer R}\n` ? TrimEnd<R>
+  : T;
 type Trim<T extends string> = TrimStart<TrimEnd<T>>;
 
 type IsUnsigned<T> = T extends `unsigned ${string}` ? T : never;

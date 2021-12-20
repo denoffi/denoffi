@@ -5,6 +5,19 @@ function assertType<S extends string, T extends ffi.CFunction<S>>() {
   return assert(true);
 }
 
+Deno.test("\nchar add(char a, char b)\n", (): void => {
+  type Add = { "add": { parameters: ["i8", "i8"]; result: "i8" } };
+
+  assertType<"\nchar add(char a, char b)", Add>();
+  assertType<"\n char add(char, char)", Add>();
+  assertType<"  \nchar  add(char, char)", Add>();
+  assertType<"char add( char, char)", Add>();
+  assertType<"char add(char, \n char)", Add>();
+  assertType<"char add(char, char) ", Add>();
+  assertType<"char add(char, char )\n", Add>();
+  assertType<" char add( char, char )\n\n", Add>();
+});
+
 Deno.test("char add(char a, char b)", (): void => {
   type Add = { "add": { parameters: ["i8", "i8"]; result: "i8" } };
 
