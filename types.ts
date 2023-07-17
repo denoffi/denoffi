@@ -29,9 +29,9 @@ type ParseName<T> = T extends `unsigned ${infer R} ${infer F}(${infer Rest})`
     }
   >
   : T extends `${infer R} ${infer F}(${infer Rest})` ? Record<
-    Trim<F>,
-    { parameters: ParseParams<Trim<Rest>>; result: ToNativeType<R> }
-  >
+      Trim<F>,
+      { parameters: ParseParams<Trim<Rest>>; result: ToNativeType<R> }
+    >
   : never;
 
 type ParseParams<T> = T extends "" ? []
@@ -83,9 +83,9 @@ type ParseReturn<T> = T extends `unsigned ${infer R} ${infer F}(${infer Rest})`
     (...args: ParseFnParams<Trim<Rest>>) => ToJsType<`unsigned ${R}`>
   >
   : T extends `${infer R} ${infer F}(${infer Rest})` ? Record<
-    Trim<F>,
-    (...args: ParseFnParams<Trim<Rest>>) => ToJsType<R>
-  >
+      Trim<F>,
+      (...args: ParseFnParams<Trim<Rest>>) => ToJsType<R>
+    >
   : never;
 
 type ParseFnParams<T> = T extends "" ? []
